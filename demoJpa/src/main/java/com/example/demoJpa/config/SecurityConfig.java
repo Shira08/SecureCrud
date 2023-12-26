@@ -8,6 +8,7 @@
     import org.springframework.security.authentication.AuthenticationManager;
     import org.springframework.security.config.Customizer;
     import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+    import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
     import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
     import org.springframework.security.core.userdetails.User;
@@ -21,6 +22,7 @@
     import static java.lang.invoke.VarHandle.AccessMode.GET;
 
         @Configuration
+        @EnableGlobalMethodSecurity(prePostEnabled = true)
         @EnableWebSecurity
         public class SecurityConfig {
             @Autowired
@@ -40,21 +42,19 @@
             @Bean
             public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.csrf(AbstractHttpConfigurer::disable)
-                        .authorizeHttpRequests(authorize -> {
-                            authorize
-                                    .requestMatchers("/users/login", "/users/register").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "/users").permitAll()
-                                    .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority(ADMIN_CREATE.name())
-                                    .requestMatchers(HttpMethod.PUT, "/users").hasAnyAuthority(ADMIN_UPDATE.name())
-                                    .requestMatchers(HttpMethod.DELETE, "/users").hasAnyAuthority(MANAGER_DELETE.name());
-
-
-                        })
+                        .authorizeRequests(authorize -> authorize
+                                .requestMatchers("/users/login", "/users/register").permitAll()
+                                // .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ROLE_ADMIN_READ", "ROLE_USER_READ")
+                                .requestMatchers(HttpMethod.PUT, "/users").hasAuthority("ROLE_ADMIN_UPDATE")
+                                .requestMatchers(HttpMethod.DELETE, "/users").hasAuthority("ROLE_MANAGER_DELETE")
+                                .anyRequest().authenticated()
+                        )
                         .httpBasic(Customizer.withDefaults());
                 return http.build();
             }
 
-   /*         @Bean
+
+            /*         @Bean
             public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.csrf(AbstractHttpConfigurer::disable)
                         .authorizeRequests(authorize -> {

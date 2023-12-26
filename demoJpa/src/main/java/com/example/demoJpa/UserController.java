@@ -4,11 +4,13 @@ package com.example.demoJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,14 +42,19 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
-        }
+        try {
+            if (userRepository.findByUsername(user.getUsername()) != null) {
+                return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
+            }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        } catch (HttpMessageNotReadableException ex) {
+            return new ResponseEntity<>("Invalid role. Accepted roles are USER, ADMIN, MANAGER.", HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
@@ -60,9 +67,20 @@ public class UserController {
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>("Incorrect username or password", HttpStatus.BAD_REQUEST);
         }
-    }
+        }
+        @GetMapping("/admin/adminProfile")
+        @PreAuthorize("hasRole('ROLE_ADMIN')")
+        public String adminProfile() {
+            return "Welcome to Admin Profile";
+        }
 
+    @GetMapping("/user/userProfile")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String userProfile() {
+        return "Welcome to User Profile";
+    }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<User> getUserById(@PathVariable Integer id) {
         try {
             User user = userService.findById(id)
@@ -73,13 +91,10 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAuthority('USER_READ')")
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Map<String, Object>> getAllUsersWithTotalCount() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            return new ResponseEntity<>("User is not logged in", HttpStatus.UNAUTHORIZED);
-        }
+     
         List<User> users = userService.findAll();
         long totalCount = users.size();
 

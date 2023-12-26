@@ -12,46 +12,31 @@ import java.util.stream.Collectors;
 import static com.example.demoJpa.Permission.*;
 
 public enum Role {
+    USER(Set.of(Permission.USER_READ)),
+    ADMIN(Set.of(Permission.ADMIN_READ, Permission.ADMIN_UPDATE, Permission.ADMIN_CREATE, Permission.MANAGER_READ, Permission.MANAGER_DELETE)),
+    MANAGER(Set.of(Permission.MANAGER_READ, Permission.MANAGER_DELETE));
 
-    USER(
-            Set.of(
-                    USER_READ
-            )
-    ),
-    ADMIN(
-            Set.of(
-                    ADMIN_READ,
-                    ADMIN_UPDATE,
-                    ADMIN_CREATE,
-                    MANAGER_READ,
-                    MANAGER_DELETE
-            )
-    ),
-    MANAGER(
-            Set.of(
-                    MANAGER_READ,
-                    MANAGER_DELETE
-            )
-    )
-
-    ;
-
-    @Getter
     private final Set<Permission> permissions;
 
     Role(Set<Permission> permissions) {
         this.permissions = permissions;
     }
-    public Set<Permission> getPermission() {
+
+    @Override
+    public String toString() {
+        return name();
+    }
+
+    public Set<Permission> getPermissions() {
         return permissions;
     }
 
     public List<SimpleGrantedAuthority> getAuthorities() {
-        var authorities = getPermission()
+        var authorities = getPermissions()
                 .stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .map(permission -> new SimpleGrantedAuthority("ROLE_" + permission.toString()))
                 .collect(Collectors.toList());
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.toString()));
         return authorities;
     }
 }

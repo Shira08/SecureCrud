@@ -28,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
       com.example.demoJpa.User user = userRepository.findByUsername(username);
 
         return new User(user.getUsername(), user.getPassword(), getGrantedAuthorities(user.getRole()));
+      //  return new User(user.getUsername(), user.getPassword(), user.getRole().getAuthorities());
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(String role) {

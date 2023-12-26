@@ -9,16 +9,21 @@ public enum Permission {
     ADMIN_CREATE("admin:create"),
     MANAGER_READ("management:read"),
     MANAGER_DELETE("management:delete"),
-    USER_READ("admin:read"),
-
-    ;
-
+    USER_READ("user:read");
 
     private final String permission;
-    public String getPermission() {
-        return permission;
-    }
+
     Permission(String permission) {
         this.permission = permission;
     }
+
+    @Override
+    public String toString() {
+        return permission;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
 }
+

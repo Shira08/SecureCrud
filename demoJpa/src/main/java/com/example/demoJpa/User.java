@@ -30,10 +30,11 @@
 
 
 
+
         @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return role.getAuthorities();
-            }
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return role.getAuthorities();
+        }
 
             @Override
             public String getPassword() {
@@ -67,7 +68,7 @@
 
 
         public String getRole() {
-            return null;
+            return role.toString();
         }
         public void setUsername(String username) {
             this.username = username;
