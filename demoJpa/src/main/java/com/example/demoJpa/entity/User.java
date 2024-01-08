@@ -1,4 +1,4 @@
-    package com.example.demoJpa;
+    package com.example.demoJpa.entity;
 
     import jakarta.persistence.*;
     import lombok.AllArgsConstructor;
@@ -29,6 +29,9 @@
             private Role role;
 
 
+
+        @OneToOne(mappedBy = "user")
+        private Employee employee;
 
 
         @Override

@@ -1,6 +1,10 @@
-package com.example.demoJpa;
+package com.example.demoJpa.controller;
 
 
+import com.example.demoJpa.exception.UserNotFoundException;
+import com.example.demoJpa.service.UserService;
+import com.example.demoJpa.entity.User;
+import com.example.demoJpa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,17 +14,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -74,13 +75,13 @@ public class UserController {
             return "Welcome to Admin Profile";
         }
 
-    @GetMapping("/user/userProfile")
-    @PreAuthorize("hasRole('ROLE_USER')")
+  /*  @GetMapping("/user/userProfile")
+    @PreAuthorize("hasAnyAuthority('USER_READ')")
     public String userProfile() {
         return "Welcome to User Profile";
-    }
+    }*/
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<User> getUserById(@PathVariable Integer id) {
         try {
             User user = userService.findById(id)

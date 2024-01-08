@@ -1,4 +1,4 @@
-package com.example.demoJpa;
+package com.example.demoJpa.exception;
 
 public class UserNotFoundException extends RuntimeException{
     public UserNotFoundException(String message) {

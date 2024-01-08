@@ -1,9 +1,10 @@
-package com.example.demoJpa;
+package com.example.demoJpa.service;
 
+import com.example.demoJpa.entity.Role;
+import com.example.demoJpa.entity.User;
+import com.example.demoJpa.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
