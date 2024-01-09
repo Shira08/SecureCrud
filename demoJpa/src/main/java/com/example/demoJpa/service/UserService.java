@@ -29,7 +29,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User update(Integer id, User updatedUser) {
+   /* public User update(Integer id, User updatedUser) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -40,7 +40,7 @@ public class UserService {
             return userRepository.save(user);
         }
         throw new EntityNotFoundException("User not found");
-    }
+    }*/
 
 
     public String delete(Integer id) {

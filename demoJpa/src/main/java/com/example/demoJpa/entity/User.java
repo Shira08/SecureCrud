@@ -25,13 +25,15 @@
             private String username;
             private String password;
 
-            @Enumerated(EnumType.STRING)
-            private Role role;
 
 
 
         @OneToOne(mappedBy = "user")
         private Employee employee;
+
+        @ManyToOne
+        @JoinColumn(name = "role_id")
+        private Role role;
 
 
         @Override

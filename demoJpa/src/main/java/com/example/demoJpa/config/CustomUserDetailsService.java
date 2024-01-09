@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.demoJpa.entity.Role;
 import com.example.demoJpa.entity.User;
+import com.example.demoJpa.repository.RoleRepository;
 import com.example.demoJpa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +23,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
 
 
     @Override
@@ -30,10 +34,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        Role userRole = Role.valueOf(user.getRole());
+       String roleName = user.getRole();
+        Role userRole = roleRepository.findByName(roleName);
+        if (userRole == null) {
+            throw new UsernameNotFoundException("Role not found with name: " + roleName);
+        }
         List<SimpleGrantedAuthority> authorities = userRole.getAuthorities();
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
+
 
     private List<GrantedAuthority> getGrantedAuthorities(String role) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();

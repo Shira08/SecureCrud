@@ -37,7 +37,7 @@
                 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                     http.csrf(AbstractHttpConfigurer::disable)
                             .authorizeRequests(authorize -> authorize
-                                    .requestMatchers("/users/login", "/users/register").permitAll()
+                                    .requestMatchers("/users/login", "/users/register","/api/roles/**").permitAll()
                                     // .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ROLE_ADMIN_READ", "ROLE_USER_READ")
                                     .requestMatchers(HttpMethod.PUT, "/users").hasAuthority("ROLE_ADMIN_UPDATE")
                                     .requestMatchers(HttpMethod.DELETE, "/users").hasAuthority("ROLE_MANAGER_DELETE")
