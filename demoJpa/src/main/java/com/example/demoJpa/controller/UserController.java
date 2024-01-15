@@ -1,7 +1,10 @@
 package com.example.demoJpa.controller;
 
 
+import com.example.demoJpa.dto.UserDto;
 import com.example.demoJpa.exception.UserNotFoundException;
+import com.example.demoJpa.repository.RoleRepository;
+import com.example.demoJpa.service.RoleService;
 import com.example.demoJpa.service.UserService;
 import com.example.demoJpa.entity.User;
 import com.example.demoJpa.repository.UserRepository;
@@ -36,25 +39,35 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDTO) {
         try {
-            if (userRepository.findByUsername(user.getUsername()) != null) {
+            if (userRepository.findByUsername(userDTO.getUsername()) != null) {
                 return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
             }
-
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User user = new User();
+            user.setRole(roleRepository.findById(userDTO.getRole_id()).orElseThrow(() -> new IllegalArgumentException("Invalid role Id:" + userDTO.getRole_id())));
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            user.setUsername(userDTO.getUsername());
             userRepository.save(user);
             return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
         } catch (HttpMessageNotReadableException ex) {
             return new ResponseEntity<>("Invalid role. Accepted roles are USER, ADMIN, MANAGER.", HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 
     @PostMapping("/login")

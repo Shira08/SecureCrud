@@ -19,6 +19,7 @@ public class RoleController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addRole(@RequestBody Role role) {
+
         if (role.getName() == null || role.getName().isEmpty() ||
                 role.getDescription() == null || role.getDescription().isEmpty()) {
             return new ResponseEntity<>("Name and description must not be empty", HttpStatus.BAD_REQUEST);

@@ -2,6 +2,7 @@ package com.example.demoJpa.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.example.demoJpa.entity.Role;
 import com.example.demoJpa.entity.User;
@@ -34,20 +35,21 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-       String roleName = user.getRole();
-        Role userRole = roleRepository.findByName(roleName);
+       String name = user.getRole();
+        Role userRole = roleRepository.findByName(name);
         if (userRole == null) {
-            throw new UsernameNotFoundException("Role not found with name: " + roleName);
+            throw new UsernameNotFoundException("Role not found with name: " + name);
         }
-        List<SimpleGrantedAuthority> authorities = userRole.getAuthorities();
+        List<GrantedAuthority> authorities = new ArrayList<>(userRole.getAuthorities());
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
-
-
-    private List<GrantedAuthority> getGrantedAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+    private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String privilege : privileges) {
+            authorities.add(new SimpleGrantedAuthority(privilege));
+        }
         return authorities;
     }
 

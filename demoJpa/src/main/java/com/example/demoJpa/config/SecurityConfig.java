@@ -39,8 +39,6 @@
                             .authorizeRequests(authorize -> authorize
                                     .requestMatchers("/users/login", "/users/register","/api/roles/**").permitAll()
                                     // .requestMatchers(HttpMethod.GET, "/users/**").hasAnyAuthority("ROLE_ADMIN_READ", "ROLE_USER_READ")
-                                    .requestMatchers(HttpMethod.PUT, "/users").hasAuthority("ROLE_ADMIN_UPDATE")
-                                    .requestMatchers(HttpMethod.DELETE, "/users").hasAuthority("ROLE_MANAGER_DELETE")
                                     .anyRequest().authenticated()
                             )
                             .httpBasic(Customizer.withDefaults());
