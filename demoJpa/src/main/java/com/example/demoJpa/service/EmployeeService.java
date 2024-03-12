@@ -20,7 +20,7 @@ public class EmployeeService {
             Employee emp = new Employee();
             employee.setName(employee.getName());
             employee.setSalary(employee.getSalary());
-            employee.setUser(employee.getUser());
+            //employee.setUser(employee.getUser());
             return employeeRepository.save(employee);
         }
 

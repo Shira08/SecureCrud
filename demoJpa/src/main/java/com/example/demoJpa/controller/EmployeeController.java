@@ -52,7 +52,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('employee:read')")
+    //@PreAuthorize("hasAuthority('employee:read')")
     public List<Employee> getAllEmployees() {
         return employeeService.fetchAllEmployees();
     }

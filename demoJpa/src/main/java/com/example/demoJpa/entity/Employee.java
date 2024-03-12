@@ -23,9 +23,9 @@
 
         @Column(name="salary")
         private Integer salary;
-        @OneToOne(cascade = CascadeType.ALL)
+       /* @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "user_id", referencedColumnName = "id")
-        private User user;
+        private User user;*/
         public void setId(Long id) {
             this.id = id;
         }

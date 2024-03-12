@@ -32,15 +32,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
+
+
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-       String name = user.getRole();
-        Role userRole = roleRepository.findByName(name);
+       Role role = user.getRole();
+        System.out.println(role.getName());
+        Role userRole = roleRepository.findByName(role.getName());
+
+//revoir les erreurs
         if (userRole == null) {
-            throw new UsernameNotFoundException("Role not found with name: " + name);
+            throw new UsernameNotFoundException("Role not found with name: " );
         }
         List<GrantedAuthority> authorities = new ArrayList<>(userRole.getAuthorities());
+        System.out.println(authorities);
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }

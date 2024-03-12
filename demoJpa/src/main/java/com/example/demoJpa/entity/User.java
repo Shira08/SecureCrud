@@ -28,8 +28,8 @@
 
 
 
-        @OneToOne(mappedBy = "user")
-        private Employee employee;
+     /*   @OneToOne(mappedBy = "user")
+        private Employee employee;*/
 
         @ManyToOne
         @JoinColumn(name = "role_id")
@@ -46,7 +46,11 @@
                 return password;
             }
 
-            @Override
+        public Integer getId() {
+            return id;
+        }
+
+        @Override
             public String getUsername() {
                 return username;
             }
@@ -72,8 +76,8 @@
         }
 
 
-        public String getRole() {
-            return role.toString();
+        public Role getRole() {
+            return this.role = role;
         }
         public void setUsername(String username) {
             this.username = username;
@@ -86,4 +90,6 @@
         public void setRole(Role role) {
             this.role = role;
         }
+
+
     }
